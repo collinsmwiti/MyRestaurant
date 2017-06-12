@@ -1,5 +1,7 @@
 package com.example.collins.myrestaurant.adapters;
 
+import android.animation.AnimatorInflater;
+import android.animation.AnimatorSet;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -79,19 +81,27 @@ public class FirebaseRestaurantViewHolder extends RecyclerView.ViewHolder  imple
 
     @Override
     public void onItemSelected() {
-        itemView.animate()
-                .alpha(0.7f)
-                .scaleX(0.9f)
-                .scaleY(0.9f)
-                .setDuration(500);
+//        itemView.animate()
+//                .alpha(0.7f)
+//                .scaleX(0.9f)
+//                .scaleY(0.9f)
+//                .setDuration(500);
+        AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(mContext,
+                R.animator.drag_scale_on);
+        set.setTarget(itemView);
+        set.start();
     }
 
     @Override
     public void onItemClear() {
-        itemView.animate()
-                .alpha(1f)
-                .scaleX(1f)
-                .scaleY(1f);
+//        itemView.animate()
+//                .alpha(1f)
+//                .scaleX(1f)
+//                .scaleY(1f);
+        AnimatorSet set = (AnimatorSet) AnimatorInflater.loadAnimator(mContext,
+                R.animator.drag_scale_off);
+        set.setTarget(itemView);
+        set.start();
     }
 
 }
