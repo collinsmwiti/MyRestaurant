@@ -11,6 +11,7 @@ import java.util.List;
 
 @Parcel
 public class Restaurant {
+    String index;
     String name;
     String phone;
     String website;
@@ -28,6 +29,7 @@ public class Restaurant {
     public Restaurant(String name, String phone, String website,
                       double rating, String imageUrl, ArrayList<String> address,
                       double latitude, double longitude, ArrayList<String> categories) {
+        this.index="not_specified";
         this.name = name;
         this.phone = phone;
         this.website = website;
@@ -87,5 +89,13 @@ public class Restaurant {
 
     public void setPushId(String pushId) {
         this.pushId = pushId;
+    }
+
+    public String getIndex() {
+        return index;
+    }
+
+    public void setIndex(String index) {
+        this.index = index;
     }
 }
