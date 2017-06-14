@@ -3,7 +3,6 @@ package com.example.collins.myrestaurant.adapters;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
@@ -19,6 +18,7 @@ import com.example.collins.myrestaurant.R;
 import com.example.collins.myrestaurant.models.Restaurant;
 import com.example.collins.myrestaurant.ui.RestaurantDetailActivity;
 import com.example.collins.myrestaurant.ui.RestaurantDetailFragment;
+import com.example.collins.myrestaurant.util.OnRestaurantSelectedListener;
 import com.squareup.picasso.Picasso;
 
 import org.parceler.Parcels;
@@ -38,16 +38,18 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 
     private ArrayList<Restaurant> mRestaurants = new ArrayList<>();
     private Context mContext;
+    private OnRestaurantSelectedListener mOnRestaurantSelectedListener;
 
-    public RestaurantListAdapter(Context context, ArrayList<Restaurant> restaurants) {
+    public RestaurantListAdapter(Context context, ArrayList<Restaurant> restaurants, OnRestaurantSelectedListener restaurantSelectedListener) {
         mContext = context;
         mRestaurants = restaurants;
+        mOnRestaurantSelectedListener = restaurantSelectedListener;
     }
 
     @Override
     public RestaurantListAdapter.RestaurantViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.restaurant_list_item, parent, false);
-        RestaurantViewHolder viewHolder = new RestaurantViewHolder(view);
+        RestaurantViewHolder viewHolder = new RestaurantViewHolder(view, mRestaurants, mOnRestaurantSelectedListener);
         return viewHolder;
     }
 
@@ -69,8 +71,10 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 
         private Context mContext;
         private int mOrientation;
+        private ArrayList<Restaurant> mRestaurants = new ArrayList<>();
+        private OnRestaurantSelectedListener mRestaurantSelectedListener;
 
-        public RestaurantViewHolder(View itemView) {
+        public RestaurantViewHolder(View itemView, ArrayList<Restaurant> restaurants, OnRestaurantSelectedListener restaurantSelectedListener) {
             super(itemView);
             ButterKnife.bind(this, itemView);
 
@@ -78,6 +82,8 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 
             //Determines the current orientation of the device:
             mOrientation = itemView.getResources().getConfiguration().orientation;
+            mRestaurants = restaurants;
+            mRestaurantSelectedListener = restaurantSelectedListener;
 
             //checks if the recorded orientation matches Android's landscape configuration.
             //if so, we create a new DetailFragment to display in our special landscape layout:
@@ -116,6 +122,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
             Log.d("click listener", "working!");
             //Determines the position of the restaurant clicked:
             int itemPosition = getLayoutPosition();
+            mRestaurantSelectedListener.onRestaurantSelected(itemPosition, mRestaurants);
             if (mOrientation == Configuration.ORIENTATION_LANDSCAPE) {
                 createDetailFragment(itemPosition);
             } else {

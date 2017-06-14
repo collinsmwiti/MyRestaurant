@@ -1,6 +1,7 @@
 package com.example.collins.myrestaurant.ui;
 
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -21,6 +22,7 @@ import com.example.collins.myrestaurant.R;
 import com.example.collins.myrestaurant.adapters.RestaurantListAdapter;
 import com.example.collins.myrestaurant.models.Restaurant;
 import com.example.collins.myrestaurant.services.YelpService;
+import com.example.collins.myrestaurant.util.OnRestaurantSelectedListener;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,6 +44,17 @@ public class RestaurantListFragment extends Fragment {
     private SharedPreferences mSharedPreferences;
     private SharedPreferences.Editor mEditor;
     private String mRecentAddress;
+    private OnRestaurantSelectedListener mOnRestaurantSelectedListener;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        try {
+            mOnRestaurantSelectedListener = (OnRestaurantSelectedListener) context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + e.getMessage());
+        }
+    }
 
     public RestaurantListFragment() {
     }
@@ -117,7 +130,7 @@ public class RestaurantListFragment extends Fragment {
 
                     @Override
                     public void run() {
-                        mAdapter = new RestaurantListAdapter(getActivity(), mRestaurants);
+                        mAdapter = new RestaurantListAdapter(getActivity(), mRestaurants, mOnRestaurantSelectedListener);
                         mRecyclerView.setAdapter(mAdapter);
                         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
                         mRecyclerView.setLayoutManager(layoutManager);
